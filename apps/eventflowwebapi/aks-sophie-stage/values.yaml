@@ -1,0 +1,46 @@
+standard-service:
+  global:
+    # Name of your service
+    name: "eventflow-webapi"
+    # Customer name for properly service segregation
+    customerName: "eventflow"
+    # Should be set to 'dev', 'qa' or 'prod'. This is used for generating the internal DNS for the service
+    environment: "stage"
+
+    identity:
+      enabled: true
+      podIdentityLabel: "id-eventflow-common"
+
+  loadbalancer:
+    port: 80
+    
+    internalDNSEnabled: true
+    
+    externalTraffic:
+      # -- The public domain names
+      hosts: []
+
+    advancedConfig:
+      ingress:
+        # -- Additional annotations for the ingress object
+        annotations: {} 
+
+  deploy:
+    # -- Your image and tag must be informed with the IMAGE:TAG format
+
+    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.STAGE"
+    # -- Replicas for the service.
+    replicas: 1
+    readinessProbe: 
+      path: /hc
+      port: 80
+    # -- Resource limits and requests. Keep in mind that REQUESTS is how much (memory/cpu)
+    # the system will reserve for your service, either you use or not. LIMITS is how
+    # much (memory/cpu) your service will be able to alocate.  
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 400m
+        memory: 584Mi
