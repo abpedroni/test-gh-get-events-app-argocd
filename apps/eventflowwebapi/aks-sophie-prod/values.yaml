@@ -5,7 +5,7 @@ standard-service:
     # Customer name for properly service segregation
     customerName: "eventflow"
     # Should be set to 'dev', 'qa' or 'prod'. This is used for generating the internal DNS for the service
-    environment: "dev"
+    environment: "qa"
 
     identity:
       enabled: true
@@ -28,7 +28,7 @@ standard-service:
   deploy:
     # -- Your image and tag must be informed with the IMAGE:TAG format
 
-    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.DEV"
+    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.PROD"
     # -- Replicas for the service.
     replicas: 1
     readinessProbe: 
