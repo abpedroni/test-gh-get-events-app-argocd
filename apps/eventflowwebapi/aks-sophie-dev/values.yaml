@@ -28,7 +28,7 @@ standard-service:
   deploy:
     # -- Your image and tag must be informed with the IMAGE:TAG format
 
-    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.4f199a0.7293914525"
+    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.DEV"
     # -- Replicas for the service.
     replicas: 1
     readinessProbe: 
