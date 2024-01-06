@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./scripts
+        working-directory: 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -26,8 +26,8 @@ jobs:
           ls
 
       - name: Make the script files executable
-        run: chmod +x docker_version_replacer.sh
+        run: chmod +x ./scripts/docker_version_replacer.sh
 
       - name: Run the scripts
         run: |
-          ./docker_version_replacer.sh
+        ./scripts/docker_version_replacer.sh
