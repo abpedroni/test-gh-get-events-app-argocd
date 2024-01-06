@@ -25,5 +25,8 @@ jobs:
       - name: Make the script files executable
         run: chmod +x ./scripts/docker_version_replacer.sh
 
+      - name: CAt the scripts
+        run: cat ./scripts/docker_version_replacer.sh
+
       - name: Run the scripts
         run: ./scripts/docker_version_replacer.sh

@@ -4,7 +4,7 @@ set -e
 
 usage()
 {
-    echo -e "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
+    echo "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
 }
 usage
 
@@ -23,7 +23,7 @@ new_docker_version="NEW_DOCKER_VERSION" #$5
 base_docker_version="master.DEV" #$6
 
 echo "Deloyment environment: '$cluster_aks'."
-echo -e "------------------------------------------"
+echo "------------------------------------------\n"
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
     if [[ $i == *$cluster_aks/* ]]; 
