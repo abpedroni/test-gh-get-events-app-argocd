@@ -30,7 +30,7 @@ echo "------------------------------------------\n"
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
     
-    if [[ "$i" == "*$cluster_aks/*" ]]; then 
+    #if [[ "$i" == "*$cluster_aks/*" ]]; then 
 
         echo "> Path '$i':";
 
@@ -97,9 +97,9 @@ do
 
         # fi;
 
-    else 
-        #echo "Not proper format"; 
-        continue;
-    fi
+    # else 
+    #     #echo "Not proper format"; 
+    #     continue;
+    # fi
 
 done;
