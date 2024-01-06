@@ -1,0 +1,43 @@
+liveagent:
+  communication:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "release-SOE-10.e96945f.5812799663"
+
+  manager:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "release-SOE-10.d683844.5812802100"
+
+  timeout:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "release-v1.0.0-genesys-stefanini.dd1da67"
+
+
+  keepalive:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "release-v1.0.0-genesys-stefanini.e1678f5"
+      
+  xpto:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: release-v1.0.0-genesys-stefanini.e1678f5
+
+  xpto2:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: Aelease-v1.0.0-genesys-stefanini.e1678f5
+
+  xpto3:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: 1elease-v1.0.0-genesys-stefanini.e1678f5
