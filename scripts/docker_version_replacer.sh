@@ -23,6 +23,9 @@ new_docker_version="NEW_DOCKER_VERSION" #$5
 base_docker_version="master.DEV" #$6
 
 echo "Deloyment environment: '$cluster_aks'."
+
+find . -type f \( -name "*.yaml" -o -name "*.yml" \)
+
 echo "------------------------------------------\n"
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
@@ -38,14 +41,14 @@ do
                 echo "First attempt! Pattern :$base_docker_version\"";
                 
                 grep -e ":$base_docker_version\"" "$i" | awk '{print "* Docker image found:", $2}' 
-                echo -e "* New docker version: $new_docker_version"
+                echo  "* New docker version: $new_docker_version"
                 sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
-                echo -e "------------------------------------------"
+                echo  "------------------------------------------"
                 sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
 
                 continue;
             else
-                echo -e "First attempt! \e[31m> NOT FOUND\e[0m"; 
+                echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
             fi;
         fi;
 
@@ -53,23 +56,23 @@ do
         then  
             echo "Second attempt! Pattern \"$docker_registry/$namespace/$component:.*\""; 
             grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | awk '{print "* Docker image found:", $2}' 
-            echo -e "* New docker version: $new_docker_version"
+            echo  "* New docker version: $new_docker_version"
             sed -i -E "s|(\"$docker_registry\/$namespace\/$component:)(..*)\"|\1$new_docker_version\"|g" "$i"
-            echo -e "------------------------------------------"
+            echo  "------------------------------------------"
             sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
         else
-            echo -e "Second attempt! \e[31m> NOT FOUND\e[0m"; 
+            echo  "Second attempt! \e[31m> NOT FOUND\e[0m"; 
 
             if [ $(grep -e "\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
             then  
                 echo "Third attempt! Pattern /$component:.*\""; 
                 egrep -e "(\/$component:)(..*)(\")" "$i" | awk '{print "* Docker image found:", $2}'
-                echo -e "* New docker version: $new_docker_version"
+                echo  "* New docker version: $new_docker_version"
                 sed -i -E "s|(\/$component:)(..*)(\")|\1$new_docker_version\3|g" "$i"
-                echo -e "------------------------------------------"
+                echo  "------------------------------------------"
                 sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
             else
-                echo -e "Third attempt! \e[31m> NOT FOUND\e[0m"; 
+                echo  "Third attempt! \e[31m> NOT FOUND\e[0m"; 
                 if ([ $(egrep -e "repository: $docker_registry\/$namespace\/$component" "$i" | wc -l) -gt 0 ] && [ $(grep -e "tag:\s\".*\"" "$i" | wc -l) -gt 0 ]); 
                 then
                     echo "Forth attempt! Pattern tag:\s\".*\""; 
@@ -82,12 +85,12 @@ do
                     sed -i -E "s|(tag:\s)(..*)|\1$new_docker_version|g" "$i"
                     
 
-                    echo -e "* New docker version: $new_docker_version"
-                    echo -e "------------------------------------------"
+                    echo  "* New docker version: $new_docker_version"
+                    echo  "------------------------------------------"
                     sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
                 else
-                    echo -e "\e[31m> NOT FOUND any pattern !!!\e[0m"; 
-                    echo -e "------------------------------------------"
+                    echo  "\e[31m> NOT FOUND any pattern !!!\e[0m"; 
+                    echo  "------------------------------------------"
                 fi;
                 
             fi;
