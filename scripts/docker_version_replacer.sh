@@ -45,10 +45,10 @@ do
                 
                 grep -e ":$base_docker_version\"" "$i" | awk '{print "* Docker image found:", $2}' 
                 echo  "* New docker version: $new_docker_version"
-                #sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
+                sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
                 echo  "------------------------------------------"
                 #sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
-
+                cat "$i"
                 continue;
             else
                 echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
