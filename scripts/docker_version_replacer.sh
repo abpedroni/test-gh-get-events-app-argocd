@@ -31,7 +31,6 @@ echo $files
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
     
-    #if [ "$i" == "*$cluster_aks/*" ]; 
     if [ $(echo "$i" | grep -e "$cluster_aks/") ]; 
     then 
 
@@ -106,6 +105,7 @@ do
             echo "1"; 
              git config user.name "github-actions"
              git config user.email "github-actions@users.noreply.github.com"
+             git add .
              git commit -m "chore(deps): update $new_docker_version"
              git push
         fi
