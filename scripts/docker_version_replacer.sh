@@ -53,9 +53,11 @@ do
             else
                 echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
             fi;
+        else
+            echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
         fi;
 
-        if [ $(grep -e "\"$docker_registry\/$namespace\/$component:ERROR.*\"" "$i" | wc -l) -gt 0 ]; 
+        if [ $(grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
         then  
             echo "Second attempt! Pattern \"$docker_registry/$namespace/$component:.*\""; 
             grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | awk '{print "* Docker image found:", $2}' 
@@ -66,7 +68,7 @@ do
         else
             echo  "Second attempt! \e[31m> NOT FOUND\e[0m"; 
 
-            if [ $(grep -e "\/$component:ERROR.*\"" "$i" | wc -l) -gt 0 ]; 
+            if [ $(grep -e "\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
             then  
                 echo "Third attempt! Pattern /$component:.*\""; 
                 egrep -e "(\/$component:)(..*)(\")" "$i" | awk '{print "* Docker image found:", $2}'
@@ -97,8 +99,16 @@ do
                 fi;
                 
             fi;
-
         fi;
+
+        if [[ `git status --porcelain "$i"` ]]; 
+        then 
+            echo "1"; 
+             git config user.name "github-actions"
+             git config user.email "github-actions@users.noreply.github.com"
+             git commit -m "chore(deps): update $new_docker_version"
+             git push
+        fi
 
     else 
         #echo "Not proper format"; 
