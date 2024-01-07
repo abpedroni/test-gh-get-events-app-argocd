@@ -101,6 +101,8 @@ do
             fi;
         fi;
 
+        git status --porcelain "$i"
+        
         filesUpdated=$(git status --porcelain "$i")
 
         if [ $filesUpdated ]; 
