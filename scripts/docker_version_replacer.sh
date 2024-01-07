@@ -31,13 +31,13 @@ echo $files
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
     
-    #if [[ "$i" == "*$cluster_aks/*" ]]; 
-    if [ $(echo "$i" | grep -e "$cluster_aks/") ]; 
+    if [[ "$i" == "*$cluster_aks/*" ]]; 
+    #if [ $(echo "$i" | grep -e "$cluster_aks/") ]; 
     then 
 
         echo "> Path '$i':";
 
-        if [[ -n "$base_docker_version" ]]; then
+        if [ -n "$base_docker_version" ]; then
 
             if [ $(grep -e ":$base_docker_version\"" "$i" | wc -l) -gt 0 ]; 
             then 
