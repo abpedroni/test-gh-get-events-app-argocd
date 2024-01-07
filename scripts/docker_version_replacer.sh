@@ -37,23 +37,23 @@ do
 
         echo "> Path '$i':";
 
-        # if [[ -n "$base_docker_version" ]]; then
+        if [[ -n "$base_docker_version" ]]; then
 
-        #     if [ $(grep -e ":$base_docker_version\"" "$i" | wc -l) -gt 0 ]; 
-        #     then 
-        #         echo "First attempt! Pattern :$base_docker_version\"";
+            if [ $(grep -e ":$base_docker_version\"" "$i" | wc -l) -gt 0 ]; 
+            then 
+                echo "First attempt! Pattern :$base_docker_version\"";
                 
-        #         grep -e ":$base_docker_version\"" "$i" | awk '{print "* Docker image found:", $2}' 
-        #         echo  "* New docker version: $new_docker_version"
-        #         sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
-        #         echo  "------------------------------------------"
-        #         sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
+                grep -e ":$base_docker_version\"" "$i" | awk '{print "* Docker image found:", $2}' 
+                echo  "* New docker version: $new_docker_version"
+                #sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
+                echo  "------------------------------------------"
+                #sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
 
-        #         continue;
-        #     else
-        #         echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
-        #     fi;
-        # fi;
+                continue;
+            else
+                echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
+            fi;
+        fi;
 
         # if [ $(grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
         # then  
