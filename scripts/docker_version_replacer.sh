@@ -20,7 +20,7 @@ docker_registry="acrapplications.azurecr.io" #$2
 namespace="common" #$3
 component="eventflowwebapi" #$4
 new_docker_version="NEW_DOCKER_VERSION" #$5
-base_docker_version="master.DEV" #$6
+base_docker_version="" #$6
 
 echo "Deloyment environment: '$cluster_aks'."
 
@@ -55,7 +55,7 @@ do
             fi;
         fi;
 
-        if [ $(grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
+        if [ $(grep -e "\"$docker_registry\/$namespace\/$component:ERROR.*\"" "$i" | wc -l) -gt 0 ]; 
         then  
             echo "Second attempt! Pattern \"$docker_registry/$namespace/$component:.*\""; 
             grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | awk '{print "* Docker image found:", $2}' 
@@ -66,7 +66,7 @@ do
         else
             echo  "Second attempt! \e[31m> NOT FOUND\e[0m"; 
 
-            if [ $(grep -e "\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
+            if [ $(grep -e "\/$component:ERROR.*\"" "$i" | wc -l) -gt 0 ]; 
             then  
                 echo "Third attempt! Pattern /$component:.*\""; 
                 egrep -e "(\/$component:)(..*)(\")" "$i" | awk '{print "* Docker image found:", $2}'
