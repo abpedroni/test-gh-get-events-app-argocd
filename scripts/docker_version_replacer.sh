@@ -101,7 +101,9 @@ do
             fi;
         fi;
 
-        if [ `git status --porcelain "$i"` ]; 
+        filesUpdated=$(git status --porcelain "$i")
+
+        if [ $filesUpdated ]; 
         then 
             echo "1"; 
              git config user.name "github-actions"
