@@ -101,7 +101,7 @@ do
             fi;
         fi;
 
-        if [[ `git status --porcelain "$i"` ]]; 
+        if [ `git status --porcelain "$i"` ]; 
         then 
             echo "1"; 
              git config user.name "github-actions"
