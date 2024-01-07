@@ -31,8 +31,8 @@ echo $files
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
     
-    if [ "$i" == "*$cluster_aks/*" ]; 
-    #if [ $(echo "$i" | grep -e "$cluster_aks/") ]; 
+    #if [ "$i" == "*$cluster_aks/*" ]; 
+    if [ $(echo "$i" | grep -e "$cluster_aks/") ]; 
     then 
 
         echo "> Path '$i':";
