@@ -3,6 +3,15 @@ name: Execute Script
 # Controls when the workflow will run
 on:
   workflow_dispatch:
+    inputs:
+      new_docker_version:
+        description: 'Enter promote new version.'     
+        required: true
+        default: 'master.a1c905b.7290957852'
+      base_docker_version:
+        description: 'Enter a version to be used in search.'     
+        required: true
+        default: ''
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,5 +36,5 @@ jobs:
         run: chmod +x ./scripts/docker_version_replacer.sh
 
       - name: Run the scripts
-        run: ./scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "master.DEV" "NEW_DOCKER_VERSION"
+        run: ./scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
 

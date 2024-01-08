@@ -34,12 +34,12 @@ usage
 [ $5 ] || { echo "The new docker image version. (ex: master.a1c905b.7290957852)." >&2; exit 1; }
 [ $6 ] || { echo "The base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; exit 1; }
 
-environment_label=$(to_lower "$1")  #$1
+environment_label="$1" #$1
 cluster_aks="aks-sophie-$environment_label"
-docker_registry=$(to_lower "$2") #"acrapplications.azurecr.io"
-namespace=$(to_lower "$3") #common
-component=$(to_lower "$4") #eventflowwebapi
-new_docker_version=$(to_lower "$5") #NEW_DOCKER_VERSION
+docker_registry="$2" #"acrapplications.azurecr.io"
+namespace="$3" #common
+component="$4" #eventflowwebapi
+new_docker_version="$5" #NEW_DOCKER_VERSION
 base_docker_version="$6"
 
 echo "Deloyment environment: '$cluster_aks'."
