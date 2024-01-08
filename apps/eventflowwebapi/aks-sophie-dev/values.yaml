@@ -28,7 +28,7 @@ standard-service:
   deploy:
     # -- Your image and tag must be informed with the IMAGE:TAG format
 
-    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.a1c905b.7290957852"
+    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.DEV"
     # -- Replicas for the service.
     replicas: 1
     readinessProbe: 
@@ -43,4 +43,4 @@ standard-service:
         memory: 256Mi
       limits:
         cpu: 400m
-        memory: 584Mi
+        memory: 584Mi
