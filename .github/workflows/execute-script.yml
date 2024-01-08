@@ -10,7 +10,7 @@ on:
         default: 'master.a1c905b.7290957852'
       base_docker_version:
         description: 'Provide an existing version.'     
-        required: true
+        required: false
         default: ''
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
