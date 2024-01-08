@@ -76,7 +76,7 @@ do
                 echo "  * New docker version: $new_docker_version"
                 sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
                 echo "------------------------------------------"
-                sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
+                ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
                 commit_files
                 continue;
             else
@@ -93,7 +93,7 @@ do
             echo "  * New docker version: $new_docker_version"
             sed -i -E "s|(\"$docker_registry\/$namespace\/$component:)(..*)\"|\1$new_docker_version\"|g" "$i"
             echo "------------------------------------------"
-            sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
+            ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
         else
             echo "  * Second attempt! \e[35m> NOT FOUND\e[0m"; 
 
@@ -104,7 +104,7 @@ do
                 echo "  * New docker version: $new_docker_version"
                 sed -i -E "s|(\/$component:)(..*)(\")|\1$new_docker_version\3|g" "$i"
                 echo "------------------------------------------"
-                sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
+                ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
             else
                 echo "  * Third attempt! \e[35m> NOT FOUND\e[0m"; 
                 if ([ $(egrep -e "repository: $docker_registry\/$namespace\/$component" "$i" | wc -l) -gt 0 ] && [ $(grep -e "tag:\s\".*\"" "$i" | wc -l) -gt 0 ]); 
@@ -117,11 +117,10 @@ do
                     #tag starting with alphabet
                     grep -e "tag:\s\w.*" "$i" | awk '{print "  * Docker image found:", $2}' 
                     sed -i -E "s|(tag:\s)(..*)|\1$new_docker_version|g" "$i"
-                    
 
                     echo "  * New docker version: $new_docker_version"
                     echo "------------------------------------------"
-                    sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
+                    ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
                 else
                     echo "  * \e[31mResult: We didn't find any reference of the image $new_docker_version !!!\e[0m"; 
                     echo "------------------------------------------"
