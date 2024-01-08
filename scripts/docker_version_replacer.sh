@@ -4,7 +4,21 @@ set -e
 
 usage()
 {
+    echo "How to use it ?"
     echo "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
+    echo "NOTE: Replace the < and > with parentesis with the value you want to use, example, \"dev\". "
+}
+
+print_used_params()
+{
+    echo "\e[33mParams used:\e[0m"
+    echo "environment_label   = $1"
+    echo "docker_registry     = $2"
+    echo "namespace           = $3"
+    echo "component           = $4"
+    echo "new_docker_version  = $5"
+    echo "base_docker_version = $6"
+    echo "------------------------------------------"
 }
 
 to_lower() {
@@ -25,14 +39,14 @@ commit_files() {
     fi
 }
 
-usage
+[ $1 ] || { echo -e "\e[31mERROR:\e[0m Invalid environment label (ex: dev, qa, prod)." >&2; usage; exit 1; }
+[ $2 ] || { echo -e "\e[31mERROR:\e[0mInvalid docker registry (ex: acrapplications.azurecr.io)." >&2; usage; exit 1; }
+[ $3 ] || { echo -e "\e[31mERROR:\e[0mNamespace used in the docker image version (ex: common)." >&2; usage; exit 1; }
+[ $4 ] || { echo -e "\e[31mERROR:\e[0mThe name of component. (ex: eventflowwebapi, liveagentmanagerwebapi)." >&2; usage; exit 1; }
+[ $5 ] || { echo -e "\e[31mERROR:\e[0mThe new docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
+[ $6 ] || { echo -e "\e[31mERROR:\e[0mThe base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
 
-[ $1 ] || { echo "Invalid environment label (ex: dev, qa, prod)." >&2; exit 1; }
-[ $2 ] || { echo "Invalid docker registry (ex: acrapplications.azurecr.io)." >&2; exit 1; }
-[ $3 ] || { echo "Namespace used in the docker image version (ex: common)." >&2; exit 1; }
-[ $4 ] || { echo "The name of component. (ex: eventflowwebapi, liveagentmanagerwebapi)." >&2; exit 1; }
-[ $5 ] || { echo "The new docker image version. (ex: master.a1c905b.7290957852)." >&2; exit 1; }
-[ $6 ] || { echo "The base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; exit 1; }
+print_used_params $1 $2 $3 $4 $5 $6
 
 environment_label="$1" #$1
 cluster_aks="aks-sophie-$environment_label"
