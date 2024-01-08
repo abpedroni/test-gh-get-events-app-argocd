@@ -13,8 +13,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_GH_TOKEN }}
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
@@ -24,9 +25,6 @@ jobs:
 
       - name: Make the script files executable
         run: chmod +x ./scripts/docker_version_replacer.sh
-
-      - name: CAt the scripts
-        run: cat ./scripts/docker_version_replacer.sh
 
       - name: Run the scripts
         run: ./scripts/docker_version_replacer.sh

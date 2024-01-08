@@ -24,9 +24,8 @@ base_docker_version="" #$6
 
 echo "Deloyment environment: '$cluster_aks'."
 
-files=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \))
-
-echo $files
+#files=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \))
+#echo $files
 
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
