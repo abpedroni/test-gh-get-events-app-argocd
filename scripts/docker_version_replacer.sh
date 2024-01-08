@@ -2,12 +2,12 @@
 
 set -e
 
-function usage()
+usage()
 {
     echo -e "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
 }
 
-function to_lower {
+to_lower() {
     echo "$1" | awk '{print tolower($0)}' 
 }
 
