@@ -11,6 +11,20 @@ to_lower() {
     echo "$1" | awk '{print tolower($0)}' 
 }
 
+commit_files() {
+
+    if [ $(git status --porcelain | wc -l) -gt 0 ];
+    then 
+        echo  "------------------------------------------"
+        echo "Commit files updated."
+        git config user.name "github-actions"
+        git config user.email "github-actions@users.noreply.github.com"
+        git add .
+        git commit -m "chore(deps): update $new_docker_version"
+        git push
+    fi
+}
+
 usage
 
 [ $1 ] || { echo "Invalid environment label (ex: dev, qa, prod)." >&2; exit 1; }
@@ -50,6 +64,7 @@ do
                 echo  "------------------------------------------"
                 #sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
                 cat "$i"
+                commit_files
                 continue;
             else
                 echo  "First attempt! \e[31m> NOT FOUND\e[0m"; 
@@ -102,15 +117,7 @@ do
             fi;
         fi;
 
-        if [ $(git status --porcelain | wc -l) -gt 0 ];
-        then 
-            echo "1"; 
-             git config user.name "github-actions"
-             git config user.email "github-actions@users.noreply.github.com"
-             git add .
-             git commit -m "chore(deps): update $new_docker_version"
-             git push
-        fi
+        commit_files
 
     else 
         #echo "Not proper format"; 
