@@ -5,11 +5,11 @@ on:
   workflow_dispatch:
     inputs:
       new_docker_version:
-        description: 'Enter promote new version.'     
+        description: 'Provide a new docker version.'     
         required: true
         default: 'master.a1c905b.7290957852'
       base_docker_version:
-        description: 'Enter a version to be used in search.'     
+        description: 'Provide an existing version.'     
         required: true
         default: ''
 
