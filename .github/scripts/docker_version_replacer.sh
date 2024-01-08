@@ -44,7 +44,7 @@ commit_files() {
 [ $3 ] || { echo -e "\e[31mERROR:\e[0mNamespace used in the docker image version (ex: common)." >&2; usage; exit 1; }
 [ $4 ] || { echo -e "\e[31mERROR:\e[0mThe name of component. (ex: eventflowwebapi, liveagentmanagerwebapi)." >&2; usage; exit 1; }
 [ $5 ] || { echo -e "\e[31mERROR:\e[0mThe new docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
-[ $6 ] || { echo -e "\e[31mERROR:\e[0mThe base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
+#[ $6 ] || { echo -e "\e[31mERROR:\e[0mThe base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
 
 print_used_params $1 $2 $3 $4 $5 $6
 
