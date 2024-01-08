@@ -27,4 +27,5 @@ jobs:
         run: chmod +x ./scripts/docker_version_replacer.sh
 
       - name: Run the scripts
-        run: ./scripts/docker_version_replacer.sh
+        run: ./scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "master.DEV" "NEW_DOCKER_VERSION"
+

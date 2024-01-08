@@ -4,28 +4,30 @@ set -e
 
 usage()
 {
-    echo "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
+    echo "./$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
 }
 usage
 
-# [[ $1 ]] || { echo "Invalid environment label (ex: dev, qa, prod)." >&2; exit 1; }
-# [[ $2 ]] || { echo "Invalid docker registry (ex: acrapplications.azurecr.io)." >&2; exit 1; }
-# [[ $3 ]] || { echo "Invalid docker registry (ex: acrapplications.azurecr.io)." >&2; exit 1; }
-# [[ $4 ]] || { echo "Invalid docker registry (ex: acrapplications.azurecr.io)." >&2; exit 1; }
-# [[ $5 ]] || { echo "Invalid docker registry (ex: acrapplications.azurecr.io)." >&2; exit 1; }
+[ $1 ] || { echo "Invalid environment label (ex: dev, qa, prod)." >&2; exit 1; }
+[ $2 ] || { echo "Invalid docker registry (ex: acrapplications.azurecr.io)." >&2; exit 1; }
+[ $3 ] || { echo "Namespace used in the docker image version (ex: common)." >&2; exit 1; }
+[ $4 ] || { echo "The name of component. (ex: eventflowwebapi, liveagentmanagerwebapi)." >&2; exit 1; }
+[ $5 ] || { echo "The new docker image version. (ex: master.a1c905b.7290957852)." >&2; exit 1; }
+[ $6 ] || { echo "The base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; exit 1; }
 
-environment_label="dev" #$1
+function to_lower {
+    echo "$1" | awk '{print tolower($0)}' 
+}
+
+environment_label="$1" #"dev"
 cluster_aks="aks-sophie-$environment_label"
-docker_registry="acrapplications.azurecr.io" #$2
-namespace="common" #$3
-component="eventflowwebapi" #$4
-new_docker_version="NEW_DOCKER_VERSION" #$5
-base_docker_version="" #$6
+docker_registry="$2" #"acrapplications.azurecr.io"
+namespace="$3" #common
+component="$4" #eventflowwebapi
+new_docker_version="$5" #NEW_DOCKER_VERSION
+base_docker_version="$6"
 
 echo "Deloyment environment: '$cluster_aks'."
-
-#files=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \))
-#echo $files
 
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
