@@ -33,8 +33,8 @@ jobs:
           ls
 
       - name: Make the script files executable
-        run: chmod +x ./scripts/docker_version_replacer.sh
+        run: chmod +x ./.github/scripts/docker_version_replacer.sh
 
       - name: Run the scripts
-        run: ./scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
+        run: ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
 
