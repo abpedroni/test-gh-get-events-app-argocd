@@ -52,7 +52,7 @@ jobs:
 
       - uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.REPO_GH_TOKEN }}
           script: |
             const output = `#### Validate Docker Versions 🖌
             <details><summary>Show Validate</summary>\n
