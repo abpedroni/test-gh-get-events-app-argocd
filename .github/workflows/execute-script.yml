@@ -37,26 +37,27 @@ jobs:
 
       - name: Run the scripts
         run: |
-          ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
+          ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.run_id }}"
+
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "DOCKERVERSION_REPLACER<<$EOF" >> $GITHUB_ENV
+          cat dockerversion_replacer_out.md >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
+
+          rm dockerversion_replacer_out.md
 
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add .
+          git add *.yaml
           git commit -m "chore(deps): update $new_docker_version"
           git push
-          echo "dockerversion_replacer_out=$(cat dockerversion_replacer_out.md)" >> $GITHUB_OUTPUT
 
       - uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.REPO_GH_TOKEN }}
           script: |
-            const output = `#### Validate Docker Versions 🖌
-            <details><summary>Show Validate</summary>\n
-            \`\`\`\n
-            ${{ steps.newpr.outputs.dockerversion_replacer_out }}
-            \`\`\`
-            </details>
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            const output = `#### Docker Versions for ** 🐋\n
+              ${process.env.DOCKERVERSION_REPLACER}`;
             github.rest.issues.createComment({
               issue_number: 40,
               owner: context.repo.owner,
