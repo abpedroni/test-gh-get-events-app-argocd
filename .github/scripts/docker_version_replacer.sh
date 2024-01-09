@@ -86,7 +86,7 @@ cluster_aks="aks-sophie-$environment_label"
 docker_registry="acrapplications.azurecr.io" #$2
 namespace="common" #$3
 component="eventflowwebapi" #$4
-new_docker_version="master.DEV.$6" #$5
+new_docker_version="master.DEV" #$5
 base_docker_version="master.DEV" # "master.DEV" #$6
 
 echo "Deloyment environment: '$cluster_aks'."
