@@ -41,7 +41,7 @@ jobs:
 
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add $(git status | grep aks- | sed 's/\(.*modified:\s*\)//')
+          git add *.yaml
           git commit -m "chore(deps): update $new_docker_version"
           git push
 
