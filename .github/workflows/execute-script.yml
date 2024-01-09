@@ -36,7 +36,6 @@ jobs:
         run: chmod +x ./.github/scripts/docker_version_replacer.sh
 
       - name: Run the scripts
-        id: newpr
         run: |
           ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
 
@@ -46,8 +45,10 @@ jobs:
           git commit -m "chore(deps): update $new_docker_version"
           git push
 
-          docker_output=$(cat dockerversion_replacer_out.md)
-          echo "dockerversion_replacer_out=$docker_output" >> $GITHUB_OUTPUT
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "DOCKERVERSION_REPLACER<<$EOF" >> $GITHUB_ENV
+          cat dockerversion_replacer_out.md >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
 
       - uses: actions/github-script@v6
         with:
@@ -56,7 +57,7 @@ jobs:
             const output = `#### Validate Docker Versions 🖌
             <details><summary>Show Validate</summary>\n
             \`\`\`\n
-            ${{ steps.newpr.outputs.dockerversion_replacer_out }}
+            ${process.env.DOCKERVERSION_REPLACER}
             \`\`\`
             </details>
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
