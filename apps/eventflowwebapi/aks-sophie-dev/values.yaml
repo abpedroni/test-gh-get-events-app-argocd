@@ -28,27 +28,7 @@ standard-service:
   deploy:
     # -- Your image and tag must be informed with the IMAGE:TAG format
 
-    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.DEV.29618"
-    # -- Replicas for the service.
-    replicas: 1
-    readinessProbe: 
-      path: /hc
-      port: 80
-    # -- Resource limits and requests. Keep in mind that REQUESTS is how much (memory/cpu)
-    # the system will reserve for your service, either you use or not. LIMITS is how
-    # much (memory/cpu) your service will be able to alocate.  
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        cpu: 400m
-        memory: 584Mi
-
-deploy:
-    # -- Your image and tag must be informed with the IMAGE:TAG format
-
-    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.DEV.29618"
+    image: "acrapplications.azurecr.io/common/eventflowwebapi:master.DEV"
     # -- Replicas for the service.
     replicas: 1
     readinessProbe: 
