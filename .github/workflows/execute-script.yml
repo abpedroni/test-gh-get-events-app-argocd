@@ -56,7 +56,7 @@ jobs:
         with:
           github-token: ${{ secrets.REPO_GH_TOKEN }}
           script: |
-            const output = `#### Docker Versions 🐋\n
+            const output = `#### Docker Versions for ** 🐋\n
               ${process.env.DOCKERVERSION_REPLACER}`;
             github.rest.issues.createComment({
               issue_number: 40,
