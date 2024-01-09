@@ -92,7 +92,7 @@ docker_registry="acrapplications.azurecr.io" #$2
 namespace="common" #$3
 component="eventflowwebapi" #$4
 new_docker_version="master.DEV.$RANDOM" #$5
-base_docker_version="" # "master.DEV" #$6
+base_docker_version="master.DEV" # "master.DEV" #$6
 
 echo "Deloyment environment: '$cluster_aks'."
 
@@ -108,18 +108,23 @@ do
 
         if [ -n "$base_docker_version" ]; then
 
-            if [ $(grep -e ":$base_docker_version\"" "$i" | wc -l) -gt 0 ]; 
-            then 
+            pattern_found=$(grep -P "\K:$base_docker_version" "$i" )
+            
+            if [ -n "$pattern_found" ]; then 
                 found_any_env=true
-                echo "  * First attempt! \e[32m> FOUND the pattern $base_docker_version\"\e[0m";
+
+                total_pattern_found=$(echo $pattern_found | awk -v RS="image: " 'NF {print $1}' |  wc -l)
+
+                echo "  * First attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+
+                current_versions=$(echo $pattern_found | awk -v RS="image: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
                 
-                grep -e ":$base_docker_version\"" "$i" | awk '{print "  * Docker image found:", $2}' 
-                echo "  * New docker version: $new_docker_version"
-                sed -i -E "s|(:)($base_docker_version)(\")|\1$new_docker_version\"|g" "$i"
+                add_file_to_comment "$i" "$current_versions" "$new_docker_version"
+                
+                #echo "  * New docker version: $new_docker_version"
+                sed -i -E "s|(:)($base_docker_version)(..*)|\1$new_docker_version\"|g" "$i"
                 echo "------------------------------------------"
-                ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
-                cat "$i"
-                commit_files
+                
                 continue;
             else
                 echo "  * First attempt! \e[35m> NOT FOUND\e[0m"; 
@@ -127,51 +132,52 @@ do
         else
             echo "  * First attempt! \e[35m> NOT FOUND\e[0m"; 
         fi;
+        
+        pattern_found=$(grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" )
+        
+        if [ -n "$pattern_found" ]; then 
 
-        if [ $(grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
-        then  
             found_any_env=true
-            echo "  * Second attempt! \e[32m> FOUND the pattern \"$docker_registry/$namespace/$component:.*\"\e[0m"; 
-            grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" | awk '{print "  * Docker image found:", $2}' 
-            echo "  * New docker version: $new_docker_version"
+            total_pattern_found=$(echo $pattern_found | awk -v RS="image: " 'NF {print $1}' |  wc -l)
+            echo "  * Second attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+            current_versions=$(echo $pattern_found | awk -v RS="image: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
             sed -i -E "s|(\"$docker_registry\/$namespace\/$component:)(..*)\"|\1$new_docker_version\"|g" "$i"
             echo "------------------------------------------"
-            ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
-            cat "$i"
+            add_file_to_comment "$i" "$current_versions" "$new_docker_version"
         else
             echo "  * Second attempt! \e[35m> NOT FOUND\e[0m"; 
 
-            if [ $(grep -e "\/$component:.*\"" "$i" | wc -l) -gt 0 ]; 
-            then 
+            pattern_found=$(grep -e "\/$component:.*\"" "$i" )
+
+            if [ -n "$pattern_found" ]; then 
+
                 found_any_env=true 
-                echo "  * Third attempt! \e[32m> FOUND the pattern /$component:.*\"\e[0m"; 
-                egrep -e "(\/$component:)(..*)(\")" "$i" | awk '{print "  * Docker image found:", $2}'
-                echo "  * New docker version: $new_docker_version"
-                sed -i -E "s|(\/$component:)(..*)(\")|\1$new_docker_version\3|g" "$i"
+
+                total_pattern_found=$(echo $pattern_found | awk -v RS="image: " 'NF {print $1}' |  wc -l)
+                echo "  * Third attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+                current_versions=$(echo $pattern_found | awk -v RS="image: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
+                sed -i -E "s|(\/$component:)(..*)|\1$new_docker_version\"|g" "$i"
                 echo "------------------------------------------"
-                ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
-                cat "$i"
+                add_file_to_comment "$i" "$current_versions" "$new_docker_version"
             else
                 echo "  * Third attempt! \e[35m> NOT FOUND\e[0m"; 
+
                 if ([ $(egrep -e "repository: $docker_registry\/$namespace\/$component" "$i" | wc -l) -gt 0 ] && [ $(grep -e "tag:\s\".*\"" "$i" | wc -l) -gt 0 ]); 
                 then
                     found_any_env=true
-                    echo "Forth attempt! \e[32m> FOUND the pattern tag:\s\".*\"\e[0m"; 
-                    #tag starting with " and ending with "
-                    grep -e "tag:\s\".*\"" "$i" | awk '{print "  * Docker image found:", $2}' 
-                    
-                    sed -i -E "s|\"(..*)\"|\"$new_docker_version\"|g" "$i"
-                    #tag starting with alphabet
-                    grep -e "tag:\s\w.*" "$i" | awk '{print "  * Docker image found:", $2}' 
-                    sed -i -E "s|(tag:\s)(..*)|\1$new_docker_version|g" "$i"
 
-                    echo "  * New docker version: $new_docker_version"
+                    pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
+                    total_pattern_found=$(echo $pattern_found | awk -v RS="tag: " 'NF {print $1}' |  wc -l)
+                    echo "  * Fourth attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+                    current_versions=$(echo $pattern_found | awk -v RS="tag: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
+                    pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
+                    sed -i -E "s|(tag:\s)(..*)|\1\"$new_docker_version\"|g" "$i"
                     echo "------------------------------------------"
-                    ##sed -i $'s/$/\r/' "$i" #convert Unix to DOS/Windows format
-                    cat "$i"
+                    add_file_to_comment "$i" "$current_versions" "$new_docker_version"
                 else
                     echo "  * \e[31mResult: We didn't find any reference of the image $new_docker_version !!!\e[0m"; 
                     echo "------------------------------------------"
+                    add_file_to_comment "$i" "$current_versions" "$new_docker_version"
                 fi;
                 
             fi;
