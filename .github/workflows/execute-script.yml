@@ -45,7 +45,9 @@ jobs:
           git add .
           git commit -m "chore(deps): update $new_docker_version"
           git push
-          echo "dockerversion_replacer_out=$(cat dockerversion_replacer_out.md)" >> $GITHUB_OUTPUT
+
+          docker_output=$(cat dockerversion_replacer_out.md)
+          echo "dockerversion_replacer_out=$docker_output" >> $GITHUB_OUTPUT
 
       - uses: actions/github-script@v6
         with:
