@@ -37,7 +37,7 @@ jobs:
 
       - name: Run the scripts
         run: |
-          ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
+          ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.run_id }}"
 
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "DOCKERVERSION_REPLACER<<$EOF" >> $GITHUB_ENV
