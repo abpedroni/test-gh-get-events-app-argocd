@@ -60,11 +60,6 @@ commit_files() {
         # git branch --show-current
         # git status
 
-        # git config user.name "github-actions"
-        # git config user.email "github-actions@users.noreply.github.com"
-        # git add .
-        # git commit -m "chore(deps): update $new_docker_version"
-        # git push
     fi
 }
 
