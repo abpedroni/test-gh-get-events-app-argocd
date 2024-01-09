@@ -157,23 +157,32 @@ do
             else
                 echo "  * Third attempt! \e[35m> NOT FOUND\e[0m"; 
 
-                # if ([ $(egrep -e "repository: $docker_registry\/$namespace\/$component" "$i" | wc -l) -gt 0 ] && [ $(grep -e "tag:\s\".*\"" "$i" | wc -l) -gt 0 ]); 
-                # then
-                #     found_any_env=true
+                # O ERRO ACONTECE QUANDO TEM UMA PASTA DO LIVEAGENT
 
-                #     pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
-                #     total_pattern_found=$(echo $pattern_found | awk -v RS="tag: " 'NF {print $1}' |  wc -l)
-                #     echo "  * Fourth attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
-                #     current_versions=$(echo $pattern_found | awk -v RS="tag: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
-                #     pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
-                #     sed -i -E "s|(tag:\s)(..*)|\1\"$new_docker_version\"|g" "$i"
-                #     echo "------------------------------------------"
-                #     add_file_to_comment "$i" "$current_versions" "$new_docker_version"
-                # else
-                #     echo "  * \e[31mResult: We didn't find any reference of the image $new_docker_version !!!\e[0m"; 
-                #     echo "------------------------------------------"
-                #     add_file_to_comment "$i" "$current_versions" "$new_docker_version"
-                # fi;
+                pattern_found=$(grep -P "\K\"$docker_registry/$namespace/$component" "$i" )
+
+                #if ([ $(egrep -e "repository: $docker_registry\/$namespace\/$component" "$i" | wc -l) -gt 0 ] && [ $(grep -e "tag:\s\".*\"" "$i" | wc -l) -gt 0 ]);  then
+                if [ -n "$pattern_found" ]; then 
+                    found_any_env=true
+
+                    # pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
+                    # total_pattern_found=$(echo $pattern_found | awk -v RS="tag: " 'NF {print $1}' |  wc -l)
+                    # echo "  * Fourth attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+                    # current_versions=$(echo $pattern_found | awk -v RS="tag: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
+                    # pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
+                    # sed -i -E "s|(tag:\s)(..*)|\1\"$new_docker_version\"|g" "$i"
+
+                    total_pattern_found=$(echo $pattern_found | awk -v RS="tag: " 'NF {print $1}' |  wc -l)
+                    echo "  * Fourth attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+                    current_versions=$(echo $pattern_found | awk -v RS="tag: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
+                    sed -i -E "s|(tag:\s)(..*)|\1\"$new_docker_version\"|g" "$i"
+                    echo "------------------------------------------"
+                    add_file_to_comment "$i" "$current_versions" "$new_docker_version"
+                else
+                    echo "  * \e[31mResult: We didn't find any reference of the image $new_docker_version !!!\e[0m"; 
+                    echo "------------------------------------------"
+                    add_file_to_comment "$i" "$current_versions" "$new_docker_version"
+                fi;
                 
             fi;
         fi;
