@@ -1,0 +1,55 @@
+liveagent:
+  communication:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  manager:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  timeout:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+
+  keepalive:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+      
+  xpto:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  xpto2:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  xpto3:
+    image:
+      repository: acrapplications.azurecr.io/common/liveagentwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  eventflowwebapicomaspas:
+    image:
+      repository: acrapplications.azurecr.io/common/eventflowwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  eventflowwebapisemaspas:
+    image:
+      repository: acrapplications.azurecr.io/common/eventflowwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
