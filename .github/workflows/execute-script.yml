@@ -39,16 +39,18 @@ jobs:
         run: |
           ./.github/scripts/docker_version_replacer.sh "dev" "acrapplications.azurecr.io" "common" "eventflowwebapi" "${{ github.event.inputs.new_docker_version }}" "${{ github.event.inputs.base_docker_version }}"
 
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "DOCKERVERSION_REPLACER<<$EOF" >> $GITHUB_ENV
+          cat dockerversion_replacer_out.md >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
+
+          rm dockerversion_replacer_out.md
+
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
           git add *.yaml
           git commit -m "chore(deps): update $new_docker_version"
           git push
-
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "DOCKERVERSION_REPLACER<<$EOF" >> $GITHUB_ENV
-          cat dockerversion_replacer_out.md >> $GITHUB_ENV
-          echo "$EOF" >> $GITHUB_ENV
 
       - uses: actions/github-script@v6
         with:
@@ -67,7 +69,3 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-
-      - name: Clean 
-        run: |
-          rm dockerversion_replacer_out.md
