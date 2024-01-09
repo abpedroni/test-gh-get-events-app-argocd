@@ -3,41 +3,53 @@ liveagent:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: "release-SOE-10.e96945f.5812799663"
+      tag: "master.DEV.29618"
 
   manager:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: "release-SOE-10.d683844.5812802100"
+      tag: "master.DEV.29618"
 
   timeout:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: "release-v1.0.0-genesys-stefanini.dd1da67"
+      tag: "master.DEV.29618"
 
 
   keepalive:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: "release-v1.0.0-genesys-stefanini.e1678f5"
+      tag: "master.DEV.29618"
       
   xpto:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: release-v1.0.0-genesys-stefanini.e1678f5
+      tag: "master.DEV.29618"
 
   xpto2:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: Aelease-v1.0.0-genesys-stefanini.e1678f5
+      tag: "master.DEV.29618"
 
   xpto3:
     image:
       repository: acrapplications.azurecr.io/common/liveagentwebapi
       pullPolicy: Always
-      tag: 1elease-v1.0.0-genesys-stefanini.e1678f5
+      tag: "master.DEV.29618"
+
+  eventflowwebapicomaspas:
+    image:
+      repository: acrapplications.azurecr.io/common/eventflowwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"
+
+  eventflowwebapisemaspas:
+    image:
+      repository: acrapplications.azurecr.io/common/eventflowwebapi
+      pullPolicy: Always
+      tag: "master.DEV.29618"

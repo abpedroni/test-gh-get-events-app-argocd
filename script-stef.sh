@@ -1,30 +1,30 @@
 #!/bin/sh
 
-#set -e
+set -e
 
 usage()
 {
-    echo -e "How to use it ?"
-    echo -e "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
-    echo -e "NOTE: Replace the < and > with parentesis with the value you want to use, example, \"dev\". "
+    echo "How to use it ?"
+    echo "$(basename $0) <environment_label> <docker_registry> <namespace> <component> <new_docker_version> [base_docker_version]\n"
+    echo "NOTE: Replace the < and > with parentesis with the value you want to use, example, \"dev\". "
 }
 
 print_used_params()
 {
-    echo -e "\e[33mParams used:\e[0m"
+    echo "\e[33mParams used:\e[0m"
     echo "environment_label   = $1"
     echo "docker_registry     = $2"
     echo "namespace           = $3"
     echo "component           = $4"
     echo "new_docker_version  = $5"
     echo "base_docker_version = $6"
-    echo -e "------------------------------------------"
+    echo "------------------------------------------"
 }
 
 print_comment_header() 
 {
-    echo -e "|file|Current Versions|New Version|" >> dockerversion_replacer_out.md
-    echo -e "|---|---|---|" >> dockerversion_replacer_out.md   
+    echo "|file|Current Versions|New Version|" >> comment_pr.md
+    echo "|---|---|---|" >> comment_pr.md   
 }
 
 add_file_to_comment() 
@@ -42,11 +42,11 @@ add_file_to_comment()
         new_version="-"
     fi
     
-    echo "|$file|$current_versions|$new_version|" >> dockerversion_replacer_out.md
+    echo "|$file|$current_versions|$new_version|" >> comment_pr.md
 }
 
 to_lower() {
-    echo -e "$1" | awk '{print tolower($0)}' 
+    echo "$1" | awk '{print tolower($0)}' 
 }
 
 commit_files() {
@@ -55,7 +55,7 @@ commit_files() {
     then 
         # echo "------------------------------------------"
         #echo "Commit files updated."
-        echo "LINE OF git push were disabled."
+         echo "LINE OF git push were disabled."
         # pwd
         # git branch --show-current
         # git status
@@ -68,26 +68,23 @@ commit_files() {
     fi
 }
 
-rm dockerversion_replacer_out.md
+[ $1 ] || { echo "\e[31mERROR:\e[0m Invalid environment label (ex: dev, qa, prod)." >&2; usage; exit 1; }
+[ $2 ] || { echo "\e[31mERROR:\e[0mInvalid docker registry (ex: acrapplications.azurecr.io)." >&2; usage; exit 1; }
+[ $3 ] || { echo "\e[31mERROR:\e[0mNamespace used in the docker image version (ex: common)." >&2; usage; exit 1; }
+[ $4 ] || { echo "\e[31mERROR:\e[0mThe name of component. (ex: liveagentmanagerwebapi)." >&2; usage; exit 1; }
+[ $5 ] || { echo "\e[31mERROR:\e[0mThe new docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
+#[ $6 ] || { echo "\e[31mERROR:\e[0mThe base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
+
 print_comment_header
+print_used_params $1 $2 $3 $4 $5 $6
 
-#usage
-
-# [ $1 ] || { echo -e "\e[31mERROR:\e[0m Invalid environment label (ex: dev, qa, prod)." >&2; usage; exit 1; }
-# [ $2 ] || { echo -e "\e[31mERROR:\e[0mInvalid docker registry (ex: acrapplications.azurecr.io)." >&2; usage; exit 1; }
-# [ $3 ] || { echo -e "\e[31mERROR:\e[0mNamespace used in the docker image version (ex: common)." >&2; usage; exit 1; }
-# [ $4 ] || { echo -e "\e[31mERROR:\e[0mThe name of component. (ex: eventflowwebapi, liveagentmanagerwebapi)." >&2; usage; exit 1; }
-# [ $5 ] || { echo -e "\e[31mERROR:\e[0mThe new docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
-# [ $6 ] || { echo -e "\e[31mERROR:\e[0mThe base or existence docker image version. (ex: master.a1c905b.7290957852)." >&2; usage; exit 1; }
-
-#DEBUG
-environment_label="dev"  #$1
+environment_label="$1" 
 cluster_aks="aks-sophie-$environment_label"
-docker_registry="acrapplications.azurecr.io" #$2
-namespace="common" #$3
-component="eventflowwebapi" #$4
-new_docker_version="master.DEV.$RANDOM" #$5
-base_docker_version="" # "master.DEV" #$6
+docker_registry="$2" 
+namespace="$3" 
+component="$4" 
+new_docker_version="$5" 
+base_docker_version="$6" 
 
 echo "Deloyment environment: '$cluster_aks'."
 
@@ -96,9 +93,7 @@ found_any_env=false
 for i in $(find . -type f \( -name "*.yaml" -o -name "*.yml" \));
 do
     
-    pattern_found=""
-    
-    echo -e "\e[93m> Path '$i':\e[0m ";
+    echo "\e[93m> Path '$i':\e[0m ";
 
     if [ $(echo "$i" | grep -e "$cluster_aks/") ]; 
     then 
@@ -124,10 +119,10 @@ do
                 
                 continue;
             else
-                echo -e "  * First attempt! \e[35m> NOT FOUND\e[0m"; 
+                echo "  * First attempt! \e[35m> NOT FOUND\e[0m"; 
             fi;
         else
-            echo -e "  * First attempt! \e[35m> NOT FOUND\e[0m"; 
+            echo "  * First attempt! \e[35m> NOT FOUND\e[0m"; 
         fi;
         
         pattern_found=$(grep -e "\"$docker_registry\/$namespace\/$component:.*\"" "$i" )
@@ -136,13 +131,13 @@ do
 
             found_any_env=true
             total_pattern_found=$(echo $pattern_found | awk -v RS="image: " 'NF {print $1}' |  wc -l)
-            echo -e "  * Second attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+            echo "  * Second attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
             current_versions=$(echo $pattern_found | awk -v RS="image: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
             sed -i -E "s|(\"$docker_registry\/$namespace\/$component:)(..*)\"|\1$new_docker_version\"|g" "$i"
             echo "------------------------------------------"
             add_file_to_comment "$i" "$current_versions" "$new_docker_version"
         else
-            echo -e "  * Second attempt! \e[35m> NOT FOUND\e[0m"; 
+            echo "  * Second attempt! \e[35m> NOT FOUND\e[0m"; 
 
             pattern_found=$(grep -e "\/$component:.*\"" "$i" )
 
@@ -151,13 +146,13 @@ do
                 found_any_env=true 
 
                 total_pattern_found=$(echo $pattern_found | awk -v RS="image: " 'NF {print $1}' |  wc -l)
-                echo -e "  * Third attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+                echo "  * Third attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
                 current_versions=$(echo $pattern_found | awk -v RS="image: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
                 sed -i -E "s|(\/$component:)(..*)|\1$new_docker_version\"|g" "$i"
                 echo "------------------------------------------"
                 add_file_to_comment "$i" "$current_versions" "$new_docker_version"
             else
-                echo -e "  * Third attempt! \e[35m> NOT FOUND\e[0m"; 
+                echo "  * Third attempt! \e[35m> NOT FOUND\e[0m"; 
 
                 if ([ $(egrep -e "repository: $docker_registry\/$namespace\/$component" "$i" | wc -l) -gt 0 ] && [ $(grep -e "tag:\s\".*\"" "$i" | wc -l) -gt 0 ]); 
                 then
@@ -165,14 +160,14 @@ do
 
                     pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
                     total_pattern_found=$(echo $pattern_found | awk -v RS="tag: " 'NF {print $1}' |  wc -l)
-                    echo -e "  * Fourth attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
+                    echo "  * Fourth attempt! \e[32m> Found ($total_pattern_found) version(s) to be replaced.\e[0m"; 
                     current_versions=$(echo $pattern_found | awk -v RS="tag: " 'BEGIN{ORS=""} NF {gsub(/"/, ""); print $1 " <br /> "}' )
                     pattern_found=$(grep -P 'tag:\s(\K[^"]+|\"\K[^"]+)' "$i" )
                     sed -i -E "s|(tag:\s)(..*)|\1\"$new_docker_version\"|g" "$i"
                     echo "------------------------------------------"
                     add_file_to_comment "$i" "$current_versions" "$new_docker_version"
                 else
-                    echo -e "  * \e[31mResult: We didn't find any reference of the image $new_docker_version !!!\e[0m"; 
+                    echo "  * \e[31mResult: We didn't find any reference of the image $new_docker_version !!!\e[0m"; 
                     echo "------------------------------------------"
                     add_file_to_comment "$i" "$current_versions" "$new_docker_version"
                 fi;
@@ -183,7 +178,7 @@ do
         commit_files
 
     else 
-        echo -e "  * Different environment! \e[35m>Excluded!\e[0m"; 
+        echo "  * Different environment! \e[35m>Excluded!\e[0m"; 
         echo "------------------------------------------"
 
         continue;
@@ -192,41 +187,5 @@ do
 done;
 
 if [ "$found_any_env" = false ]; then
-    echo -e "\e[31mResult: We didn't find any reference of the image $new_docker_version in the choosed environment $environment_label or the environment doesn't exists !!!\e[0m"; 
+    echo "\e[31mResult: We didn't find any reference of the image $new_docker_version in the choosed environment $environment_label or the environment doesn't exists !!!\e[0m"; 
 fi;
-
-cat dockerversion_replacer_out.md
-
-
-
-#grep -r -e "tag:\s\".*\"" "$i" ; done
-#grep -r -e "tag:\s\".*\"" * | grep -v "grep" | sed -E "s|\"(..*)\"|\">>>\1<<<\"|g"
-
-# WORKING: find . -type f -exec grep -H 'id-' {} \;
-#          grep -r "acrapplications.azurecr.io" *
-#          find . -type f -name "*.*" -print0 | xargs --null grep --with-filename --line-number --no-messages --color --ignore-case "acrapplications.azurecr.io"
-
-# docker image pattern
-# grep -r -e "tag:\s\".*\"" *
-# grep -r -e "tag:\s\".*\"" * | grep -v "grep" | sed -e 's/.*tag:\s\"//' | sed -e 's/\".*//' | sort | uniq
-# regex pattern: $@"tag:\s\""(.*)\"""
-#   WORKs for liveagent: grep -r -e "tag:\s\".*\"" * | grep -v "grep" | sed -E "s|\"(..*)\"|\">>>\1<<<\"|g"
-# grep -r -e "eventflowwebapi.*\"" apps/*
-# grep -r -e "eventflowwebapi.*\"" apps/* | grep -v "grep" | sed -e 's/.*tag:\s\"//' | sed -e 's/\".*//' | sort | uniq
-# regex pattern: $@"{dockerImageInfo.ApiName}:(.*)\"""
-#   WORKS: grep -r -e "\/eventflowwebapi:.*\"" * | grep -v "grep" | sed -E "s|(\/eventflowwebapi:)(..*)(\")|\1>>>\2<<<\3|g"
-
-# regex pattern: @"\""{dockerImageInfo.DockerRegistry}\/{dockerImageInfo.Namespace}\/{dockerImageInfo.ApiName}:(.*)\"""
-#   WORKS: grep -r -e "\"acrapplications.azurecr.io\/common\/eventflowwebapi:.*\"" * | sed -E "s|(\"acrapplications.azurecr.io\/common\/eventflowwebapi:)(..*)\"|\1>>>\2<<<\"|g"
-
-# for i in $(find . -type f); \
-# do echo -e ">>>$i<<<"; done
-
-  # for i in $(find . -type f); echo -e "$i" done;
-  #   do 
-  #     if grep -i "id-" "$i" > /dev/null; then 
-  #       echo -e "$i"; 
-  #     fi; 
-  #   done;
- 
- 
